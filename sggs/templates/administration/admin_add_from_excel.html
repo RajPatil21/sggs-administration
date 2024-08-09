@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Add Adminis from Excel</h1>
+    <!-- Form to upload Excel file -->
+    <form method="post" enctype="multipart/form-data" class="mb-3">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="excel_file" class="form-label">Select Excel File:</label>
+            <input type="file" name="excel_file" id="excel_file" class="form-control-file" accept=".xls,.xlsx">
+        </div>
+        <button type="submit" class="btn btn-primary mr-2">Upload</button>
+        <a href="{% static 'samples/Add_admins.xlsx' %}" download class="btn btn-secondary">Download Sample File</a>
+    </form>
+
+    <!-- Display any errors -->
+    {% if context.errors %}
+        <h2 class="mt-5">Errors:</h2>
+        <ul>
+            {% for error in context.errors %}
+                <a  class="btn btn-warning btn-icon-split">
+                    <span class="icon text-white">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </span>
+                    <span class="text">{{ error }}</span>
+                </a> 
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <!-- Table to display added and updated users -->
+    {% if context %}
+        <h2 class="mt-5">Users Summary</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Total Added Users</th>
+                    <th>Total Updated Users</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ context.added_users|length }}</td>
+                    <td>{{ context.updated_users|length }}</td>
+                </tr>
+            </tbody>
+        </table>
+    {% endif %}
+
+    <!-- Table to display added users -->
+    {% if context.added_users %}
+        <h2>Added Users:</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Email</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Username</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in context.added_users %}
+                    <tr>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.first_name }}</td>
+                        <td>{{ user.last_name }}</td>
+                        <td>{{ user.username }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    <!-- Table to display updated users -->
+    {% if context.updated_users %}
+        <h2>Updated Users:</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Email</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Username</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in context.updated_users %}
+                    <tr>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.first_name }}</td>
+                        <td>{{ user.last_name }}</td>
+                        <td>{{ user.username }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    <!-- Table to display added teachers -->
+    {% if context.added_admins %}
+    <h2>Added Admins:</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Departments</th> 
+            </tr>
+        </thead>
+        <tbody>
+            {% for admin in context.added_admins %}
+                <tr>
+                    <td>{{ admin.user.email }}</td>
+                    <td>{{ admin.user.first_name }}</td>
+                    <td>{{ admin.user.last_name }}</td>
+                    <td>
+                        {% for department in admin.departments.all %}
+                            {{ department.name }}
+                            {% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </td> 
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+    <!-- Table to display updated teachers -->
+    {% if context.updated_admins %}
+    <h2>Updated Admins:</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Departments</th> 
+            </tr>
+        </thead>
+        <tbody>
+            {% for admin in context.updated_admins %}
+                <tr>
+                    <td>{{ admin.user.email }}</td>
+                    <td>{{ admin.user.first_name }}</td>
+                    <td>{{ admin.user.last_name }}</td>
+                    <td>
+                        {% for department in admin.departments.all %}
+                            {{ department.name }}
+                            {% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </td> 
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+</div>
+
+
+{% endblock %}
